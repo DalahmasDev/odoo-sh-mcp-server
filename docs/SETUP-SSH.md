@@ -36,12 +36,12 @@ For **Windows** with PowerShell:
     "odoo-sh": {
       "command": "node",
       "args": [
-        "D:\\Dalahmas\\Warp-Projects\\Odoo.sh MCP\\dist\\index.js"
+        "Full\\Path\\to\\Odoo.sh MCP\\dist\\index.js"
       ],
       "env": {
         "ODOO_SH_SSH_HOST": "your-project.odoo.sh",
         "ODOO_SH_SSH_USER": "your_username",
-        "ODOO_SH_SSH_KEY_PATH": "C:\\Users\\kokok\\.ssh\\id_rsa"
+        "ODOO_SH_SSH_KEY_PATH": "C:\\Users\\YourName\\.ssh\\id_rsa"
       }
     }
   }
@@ -117,7 +117,7 @@ If you haven't added your SSH public key to Odoo.sh:
 # Set environment variables
 $env:ODOO_SH_SSH_HOST="your-project.odoo.sh"
 $env:ODOO_SH_SSH_USER="your_username"
-$env:ODOO_SH_SSH_KEY_PATH="C:\Users\kokok\.ssh\id_rsa"
+$env:ODOO_SH_SSH_KEY_PATH="C:\Users\YourName\.ssh\id_rsa"
 
 # Run the server (should show "running on stdio")
 node dist/index.js
