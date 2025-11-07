@@ -1,6 +1,6 @@
 # Odoo.sh MCP Server
 
-> Model Context Protocol server for Odoo.sh platform integration, enabling AI assistants to manage projects, monitor builds, and automate deployments.
+> Model Context Protocol server for Odoo.sh platform integration via SSH, enabling AI assistants to manage Git branches, monitor builds, and automate deployments.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
@@ -8,14 +8,14 @@
 
 ## Features
 
-- **🔧 Project Management**: List and inspect Odoo.sh projects
-- **🌿 Branch Operations**: View branches and their configurations
-- **🏗️ Build Monitoring**: Track builds, view logs, trigger new builds
-- **💾 Database Info**: Access database details and backup status
-- **⚡ Performance**: Built-in caching with configurable TTL
-- **🔒 Secure**: Dynamic environment variable support for API tokens
-- **🤖 AI-Ready**: Guided prompts for common workflows
-- **📦 Easy Setup**: Simple npm install and configuration
+- **🔐 SSH-Based Access**: Secure connection via SSH keys (no API token needed)
+- **🌿 Branch Operations**: View branches, get current branch, commit history
+- **🏗️ Build Management**: Trigger builds, monitor status
+- **💾 Database Info**: Access database details
+- **📋 Logs**: View Odoo, install, and pip logs
+- **🐍 Odoo Shell**: Execute Python code in Odoo shell environment
+- **💻 System Info**: Check hostname, uptime, disk, memory
+- **📦 Easy Setup**: SSH key configuration
 
 ## Table of Contents
 
@@ -54,8 +54,9 @@ npm run build
 
 - **Node.js** >= 18.0.0
 - **npm** (comes with Node.js)
-- **Odoo.sh Account** with API access
-- **MCP Client** (Claude Desktop, Cline, Continue, etc.)
+- **Odoo.sh Account** with SSH access
+- **OpenSSH** client installed (included in Windows 10+, macOS, Linux)
+- **MCP Client** (Warp, Claude Desktop, Cline, Continue, etc.)
 
 ### Steps
 
@@ -66,10 +67,10 @@ npm run build
    npm install
    ```
 
-3. **Get your Odoo.sh API token**:
-   - Visit: `https://www.odoo.sh/project/YOUR_PROJECT#settings`
-   - Navigate to **Settings** → **API Access**
-   - Copy your API token
+3. **Set up SSH access**:
+   - Add your SSH public key to Odoo.sh (Settings → Collaborators → SSH Keys)
+   - Get your build ID and hostname from Odoo.sh (format: `BUILD_ID@project-name.dev.odoo.com`)
+   - Save your private key to a secure location
 
 4. **Build the project**:
    ```bash
@@ -83,18 +84,16 @@ npm run build
 Create a `.env` file or set environment variables:
 
 ```env
-ODOO_SH_API_TOKEN=your_api_token_here
-ODOO_SH_API_URL=https://www.odoo.sh/api  # Optional
-LOG_LEVEL=info                           # Optional: debug, info, warn, error
-API_TIMEOUT=30000                        # Optional: milliseconds
-ENABLE_CACHE=true                        # Optional: enable/disable caching
-CACHE_TTL=300                            # Optional: cache lifetime in seconds
+ODOO_SH_SSH_HOST=project-name.dev.odoo.com
+ODOO_SH_SSH_USER=BUILD_ID              # e.g., 25357858
+ODOO_SH_SSH_KEY_PATH=/path/to/ssh/key  # Absolute path to private key
+ODOO_SH_SSH_PORT=22                    # Optional: default 22
+ODOO_SH_SSH_PASSPHRASE=                # Optional: if key has passphrase
+SSH_TIMEOUT=30000                      # Optional: milliseconds
+LOG_LEVEL=info                         # Optional: debug, info, warn, error
 ```
 
-**🔐 Security Tip**: Use dynamic environment variables in Warp:
-```bash
-ODOO_SH_API_TOKEN=$(pass show odoo/api-token)
-```
+**🔐 Security Tip**: Never commit your private SSH key. Use absolute paths and secure permissions (chmod 600).
 
 ### MCP Client Configuration
 
@@ -111,7 +110,9 @@ Edit `claude_desktop_config.json`:
         "/absolute/path/to/Odoo.sh MCP/dist/index.js"
       ],
       "env": {
-        "ODOO_SH_API_TOKEN": "your_token_here"
+        "ODOO_SH_SSH_HOST": "project-name.dev.odoo.com",
+        "ODOO_SH_SSH_USER": "BUILD_ID",
+        "ODOO_SH_SSH_KEY_PATH": "/absolute/path/to/ssh/key"
       }
     }
   }
@@ -129,7 +130,9 @@ Add to VSCode settings:
       "command": "node",
       "args": ["/absolute/path/to/Odoo.sh MCP/dist/index.js"],
       "env": {
-        "ODOO_SH_API_TOKEN": "${env:ODOO_SH_API_TOKEN}"
+        "ODOO_SH_SSH_HOST": "${env:ODOO_SH_SSH_HOST}",
+        "ODOO_SH_SSH_USER": "${env:ODOO_SH_SSH_USER}",
+        "ODOO_SH_SSH_KEY_PATH": "${env:ODOO_SH_SSH_KEY_PATH}"
       }
     }
   }
@@ -144,57 +147,122 @@ Once configured, your AI assistant can use Odoo.sh tools directly:
 
 ### Example Interactions
 
-**List all projects**:
+#### Basic Operations
+
+**Check project info**:
 ```
-"Show me all my Odoo.sh projects"
+"Show me my Odoo.sh project information"
 ```
 
 **Check build status**:
 ```
-"What's the status of recent builds for project 123?"
-```
-
-**Trigger a build**:
-```
-"Trigger a new build for project 123, branch 456"
+"What's the status of recent builds?"
 ```
 
 **View build logs**:
 ```
-"Show me the build log for build 789 in project 123"
+"Show me the recent Odoo logs"
+```
+
+#### Building Custom Apps (NEW)
+
+**Create a new Odoo module**:
+```
+"Create a new custom Odoo module called 'my_custom_app' with the basic structure"
+```
+
+The AI agent can:
+1. Create directory structure: `my_custom_app/`, `my_custom_app/models/`, etc.
+2. Create `__init__.py`, `__manifest__.py` files
+3. Create model files with Python code
+4. Create XML view files
+5. Stage all files with `git add`
+6. Commit with descriptive message
+7. Push to trigger Odoo.sh build
+
+**Modify existing module**:
+```
+"Add a new field 'phone' to the Partner model in my_custom_app"
+```
+
+**Complete development workflow example**:
+```
+"I want to build a customer feedback module:
+1. Create module structure for 'customer_feedback'
+2. Add a Feedback model with fields: customer_id, rating, comment, date
+3. Create list and form views
+4. Add menu items
+5. Commit and push to main branch"
 ```
 
 ## Available Tools
 
-The server provides 10 tools for Odoo.sh operations:
+The server provides 19 tools for Odoo.sh operations via SSH, including complete Git workflow support for building custom apps:
 
-### Projects
-- **`list_projects`**: List all accessible projects
-- **`get_project`**: Get detailed project information
-  - Parameters: `project_id`
-
-### Branches
-- **`list_branches`**: List branches for a project
-  - Parameters: `project_id`
-- **`get_branch`**: Get detailed branch information
-  - Parameters: `project_id`, `branch_id`
+### Project & Branches
+- **`get_project_info`**: Get project information including branch list
+  - Returns: project name, repository, list of branches
+  - **💡 Use this to list branches** (recommended over `list_branches`)
+- **`get_current_branch`**: Get the currently checked out branch
+  - Returns: current branch name
+- **`list_branches`**: List branches with commit info
+  - Returns: branch names with last commit hash and message
+  - ⚠️ Known issue: May not work in some MCP clients (use `get_project_info` instead)
 
 ### Builds
-- **`list_builds`**: List builds for a branch
-  - Parameters: `project_id`, `branch_id`
-- **`get_build`**: Get detailed build information
-  - Parameters: `project_id`, `branch_id`, `build_id`
-- **`trigger_build`**: Trigger a new build
-  - Parameters: `project_id`, `branch_id`
-- **`get_build_log`**: Get build log content
-  - Parameters: `project_id`, `branch_id`, `build_id`
+- **`get_build_history`**: Get commit/build history for a branch
+  - Parameters: `branch` (e.g., "main"), `limit` (default: 10)
+  - Returns: commit hash, author, date, message
+- **`trigger_build`**: Trigger a new build by creating empty commit
+  - Parameters: `branch`
+  - Returns: git push output
 
 ### Database
-- **`get_database_info`**: Get database information
-  - Parameters: `project_id`, `branch_id`
+- **`list_databases`**: List all PostgreSQL databases
+  - Returns: database names and sizes
 
-### Utility
-- **`clear_cache`**: Clear internal cache (forces fresh data fetch)
+### Logs & Shell
+- **`get_logs`**: Get Odoo logs from the server
+  - Parameters: `log_type` ("odoo", "install", "pip"), `lines` (default: 100)
+  - Returns: log entries with timestamps
+- **`execute_odoo_shell`**: Execute Python code in Odoo shell
+  - Parameters: `python_code`
+  - Returns: shell output
+
+### System
+- **`get_system_info`**: Get system information
+  - Returns: hostname, uptime, disk usage, memory, Python version, Odoo version
+
+### Git Workflow & File Management (NEW - for building custom apps)
+- **`git_status`**: Get git status showing modified, staged, and untracked files
+  - Returns: git status output
+- **`write_file`**: Create or update a file with given content
+  - Parameters: `filePath` (relative to `~/src/user`), `content`
+  - Returns: success message
+  - **💡 Uses base64 encoding** to safely transfer file content via SSH
+- **`read_file`**: Read the contents of a file
+  - Parameters: `filePath` (relative to `~/src/user`)
+  - Returns: file content
+- **`list_files`**: List files and directories in a path
+  - Parameters: `dirPath` (optional, default: `.`, relative to `~/src/user`)
+  - Returns: `ls -la` output
+- **`create_directory`**: Create a directory (including parent directories)
+  - Parameters: `dirPath` (relative to `~/src/user`)
+  - Returns: success message
+- **`git_add`**: Stage files for commit
+  - Parameters: `files` (array of file paths or `.` for all)
+  - Returns: git add output
+- **`git_commit`**: Commit staged changes
+  - Parameters: `message`
+  - Returns: git commit output
+- **`git_push`**: Push commits to remote repository
+  - Parameters: `branch` (optional, defaults to current branch)
+  - Returns: git push output
+- **`git_checkout`**: Switch to a branch or create a new branch
+  - Parameters: `branch`, `createNew` (optional, default: false)
+  - Returns: git checkout output
+- **`git_pull`**: Pull changes from remote repository
+  - Returns: git pull output
 
 ## Prompts
 
@@ -274,28 +342,39 @@ npm test
 
 ### Common Issues
 
-**1. Authentication Failed**
+**1. SSH Connection Failed**
 ```
-Error: Authentication failed. Check your API token.
+Error: SSH connection error
 ```
-**Solution**: Verify `ODOO_SH_API_TOKEN` is set correctly.
+**Solution**: 
+- Verify SSH key path is correct and absolute
+- Check key permissions: `chmod 600 /path/to/key` (Unix) or `icacls` (Windows)
+- Verify hostname format: `BUILD_ID@project-name.dev.odoo.com`
+- Test manually: `ssh -i /path/to/key BUILD_ID@host`
 
-**2. Server Not Appearing**
+**2. list_branches Tool Not Working in Warp**
+```
+Empty response from list_branches
+```
+**Solution**: Use `get_project_info` instead - it returns the branch list and works reliably in all MCP clients.
+
+**3. Antivirus Blocking SSH Commands (Windows)**
+```
+Bitdefender: Malicious command line detected
+```
+**Solution**: Whitelist the SSH command or the project directory in your antivirus settings.
+
+**4. Server Not Appearing**
 - Verify JSON syntax in MCP client config
 - Check absolute path to `dist/index.js`
+- Verify environment variables are set
 - Restart MCP client
 
-**3. Module Not Found**
+**5. Module Not Found**
 ```
 Error: Cannot find module '@modelcontextprotocol/sdk/server/index.js'
 ```
 **Solution**: Run `npm install` and `npm run build`
-
-**4. Rate Limit Exceeded**
-```
-Error: Rate limit exceeded. Please try again later.
-```
-**Solution**: Enable caching (`ENABLE_CACHE=true`) and wait 60 seconds.
 
 See [docs/Troubleshooting.md](./docs/Troubleshooting.md) for more issues and solutions.
 
@@ -306,27 +385,18 @@ See [docs/Troubleshooting.md](./docs/Troubleshooting.md) for more issues and sol
 - **Runtime**: Node.js >= 18.0.0
 - **Language**: TypeScript 5.3
 - **Protocol**: Model Context Protocol (MCP)
-- **HTTP Client**: Axios
+- **SSH Client**: OpenSSH (subprocess)
 - **Validation**: Zod
 - **Transport**: stdio
 
 ### Design Decisions
 
-Key architectural decisions are documented in [docs/DECISIONS.md](./docs/DECISIONS.md):
+Key architectural decisions are documented in [docs/DECISIONS.md](./docs/DECISIONS.md) and [docs/SSH-MIGRATION.md](./docs/SSH-MIGRATION.md):
 
-- **dec-20251107T152800Z-mcp-framework**: Why MCP over REST API
-- **dec-20251107T153000Z-typescript-nodejs**: TypeScript and Node.js choice
-- **dec-20251107T153200Z-api-token-auth**: Bearer token authentication
-- **dec-20251107T153400Z-caching-strategy**: In-memory caching approach
-- **dec-20251107T153600Z-error-handling**: Status-code specific errors
-- **dec-20251107T153800Z-tool-design**: Granular tool design
-- **dec-20251107T154000Z-prompts-for-workflows**: Guided prompt workflows
-
-### Caching Strategy
-
-- **Projects/Branches**: Cached (TTL: 300s default)
-- **Builds**: Not cached (dynamic data)
-- **Cache Control**: Use `clear_cache` tool or restart server
+- **dec-20251107T160000Z-ssh-over-api**: SSH-based access instead of REST API
+- Why OpenSSH subprocess was chosen over Node.js ssh2 library
+- How Windows % escaping issues were resolved
+- Git command optimization for performance
 
 ## Contributing
 

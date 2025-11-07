@@ -40,3 +40,10 @@ coverage/
 # Temporary files
 *.tmp
 .cache/
+*.backup
+
+# SSH Keys and sensitive config
+SSH/
+*.pem
+*.key
+warp-mcp-config.json

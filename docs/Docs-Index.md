@@ -12,14 +12,16 @@ Curated links to authoritative external documentation.
   - Complete guide for using Odoo.sh platform
   - Covers project setup, branches, builds, and deployments
 
-### API Documentation
-- **Odoo.sh API**: https://www.odoo.sh/api-docs
-  - REST API endpoints and authentication
-  - Request/response formats
-  - Rate limiting information
-
-- **Odoo.sh API Token Generation**: Navigate to `https://www.odoo.sh/project/YOUR_PROJECT#settings`
-  - Settings tab → API Access section
+### SSH Access
+- **Odoo.sh SSH Documentation**: https://www.odoo.sh/doc
+  - SSH connection format: `BUILD_ID@hostname`
+  - Key management and security
+  - Working directory: `~/src/user` for custom code
+  
+- **Cybrosys Odoo.sh Guide**: https://www.cybrosys.com/blog/working-with-odoo-sh
+  - Directory structure explanation
+  - Git repository locations
+  - Development workflows
 
 ## Model Context Protocol (MCP)
 
@@ -72,13 +74,11 @@ Curated links to authoritative external documentation.
 
 ## Dependencies
 
-### Axios (HTTP Client)
-- **Axios Documentation**: https://axios-http.com/docs/intro
-  - HTTP request library
-  - Interceptors and error handling
-
-- **Axios GitHub**: https://github.com/axios/axios
-  - Source code and examples
+### Node.js Child Process
+- **Node.js child_process**: https://nodejs.org/api/child_process.html
+  - Spawning subprocesses for SSH commands
+  - exec, execFile, and spawn methods
+  - stdio handling and error management
 
 ### Zod (Validation)
 - **Zod Documentation**: https://zod.dev/
