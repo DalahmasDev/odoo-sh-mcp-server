@@ -1,21 +1,34 @@
 # Odoo.sh MCP Server
 
-> Model Context Protocol server for Odoo.sh platform integration via SSH, enabling AI assistants to manage Git branches, monitor builds, and automate deployments.
+> 🚀 SSH-based Model Context Protocol server for Odoo.sh - Build custom apps with AI assistance using Git workflow tools
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
+[![GitHub Issues](https://img.shields.io/github/issues/dalahmas/odoo-sh-mcp-server)](https://github.com/dalahmas/odoo-sh-mcp-server/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/dalahmas/odoo-sh-mcp-server?style=social)](https://github.com/dalahmas/odoo-sh-mcp-server)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## Features
+## ✨ Features
 
+### Core Operations (v1.0)
 - **🔐 SSH-Based Access**: Secure connection via SSH keys (no API token needed)
 - **🌿 Branch Operations**: View branches, get current branch, commit history
-- **🏗️ Build Management**: Trigger builds, monitor status
-- **💾 Database Info**: Access database details
-- **📋 Logs**: View Odoo, install, and pip logs
-- **🐍 Odoo Shell**: Execute Python code in Odoo shell environment
-- **💻 System Info**: Check hostname, uptime, disk, memory
-- **📦 Easy Setup**: SSH key configuration
+- **🏗️ Build Management**: Trigger builds, monitor status, view logs
+- **💾 Database Access**: List PostgreSQL databases and sizes
+- **💻 System Monitoring**: Hostname, uptime, disk, memory, versions
+- **🐍 Odoo Shell**: Execute Python code in Odoo environment
+
+### 🆕 Git Workflow & App Development (NEW in v1.0)
+- **📁 File Management**: Create, read, update files with base64 encoding
+- **📂 Directory Operations**: Create directory structures for modules
+- **📖 Git Status**: Check modified, staged, and untracked files
+- **➕ Git Add**: Stage files for commit (single or multiple)
+- **✅ Git Commit**: Commit changes with custom messages
+- **🚀 Git Push**: Push commits to remote Odoo.sh repository
+- **🌿 Git Checkout**: Switch branches or create new feature branches
+- **🔄 Git Pull**: Sync changes from remote
+- **🛠️ AI-Assisted Development**: Let AI agents build complete Odoo modules
 
 ## Table of Contents
 
