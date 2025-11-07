@@ -420,13 +420,6 @@ Contributions are welcome! Please:
 3. Update documentation (README, Runbook, DECISIONS.md)
 4. Document issues in Troubleshooting.md
 
-## Documentation
-
-- **[Runbook](./docs/Runbook.md)**: Canonical setup and usage guide
-- **[Decisions](./docs/DECISIONS.md)**: Architectural decision records
-- **[Troubleshooting](./docs/Troubleshooting.md)**: Known issues and solutions
-- **[Docs Index](./docs/Docs-Index.md)**: External documentation links
-
 ## License
 
 MIT License - see [LICENSE](./LICENSE) file for details.
