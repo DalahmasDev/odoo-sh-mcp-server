@@ -5,8 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![GitHub Issues](https://img.shields.io/github/issues/dalahmas/odoo-sh-mcp-server)](https://github.com/dalahmas/odoo-sh-mcp-server/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/dalahmas/odoo-sh-mcp-server?style=social)](https://github.com/dalahmas/odoo-sh-mcp-server)
+[![GitHub Issues](https://img.shields.io/github/issues/DalahmasDev/odoo-sh-mcp-server)](https://github.com/DalahmasDev/odoo-sh-mcp-server/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/DalahmasDev/odoo-sh-mcp-server?style=social)](https://github.com/DalahmasDev/odoo-sh-mcp-server)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ## ✨ Features
