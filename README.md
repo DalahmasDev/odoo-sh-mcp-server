@@ -102,6 +102,7 @@ ODOO_SH_SSH_USER=BUILD_ID              # e.g., 25357858
 ODOO_SH_SSH_KEY_PATH=/path/to/ssh/key  # Absolute path to private key
 ODOO_SH_SSH_PORT=22                    # Optional: default 22
 ODOO_SH_SSH_PASSPHRASE=                # Optional: if key has passphrase
+ODOO_SH_DB=                            # Optional: database for execute_odoo_shell (default: the environment's own DB)
 SSH_TIMEOUT=30000                      # Optional: milliseconds
 LOG_LEVEL=info                         # Optional: debug, info, warn, error
 ```
