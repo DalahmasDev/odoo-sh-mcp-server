@@ -24,6 +24,7 @@ const EnvSchema = z.object({
   ODOO_SH_SSH_USER: z.string().min(1, 'ODOO_SH_SSH_USER is required'),
   ODOO_SH_SSH_KEY_PATH: z.string().min(1, 'ODOO_SH_SSH_KEY_PATH is required'),
   ODOO_SH_SSH_PASSPHRASE: z.string().optional(),
+  ODOO_SH_DB: z.string().min(1).optional(),
   SSH_TIMEOUT: z.coerce.number().positive().optional().default(30000),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional().default('info'),
 });
@@ -45,6 +46,7 @@ const odooClient = new OdooShSSHClient({
   privateKeyPath: env.ODOO_SH_SSH_KEY_PATH,
   passphrase: env.ODOO_SH_SSH_PASSPHRASE,
   timeout: env.SSH_TIMEOUT,
+  database: env.ODOO_SH_DB,
 });
 
 // Create MCP server

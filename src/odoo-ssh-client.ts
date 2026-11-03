@@ -4,6 +4,11 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+// Quote a value as a single shell word for the remote shell
+function shellQuote(value: string): string {
+  return `'${value.replace(/'/g, `'\\''`)}'`;
+}
+
 // Configuration schema
 const ConfigSchema = z.object({
   host: z.string().min(1, 'SSH host is required'),
@@ -12,6 +17,7 @@ const ConfigSchema = z.object({
   privateKeyPath: z.string().min(1, 'SSH private key path is required'),
   passphrase: z.string().optional(),
   timeout: z.number().positive().default(30000),
+  database: z.string().min(1).optional(),
 });
 
 type Config = z.infer<typeof ConfigSchema>;
@@ -256,9 +262,13 @@ export class OdooShSSHClient {
    * Execute Odoo shell command
    */
   async executeOdooShell(pythonCode: string): Promise<string> {
-    // Write Python code to a temporary file and execute via odoo-bin shell
+    // Use the Odoo.sh wrapper `odoo-bin` (in PATH): it already adds the full addons path
+    // (community, enterprise, themes, user), the Odoo.sh config and the environment database
+    // (PGDATABASE). The wrapper appends its own --database last, so `-d` would be overridden:
+    // to target a specific database we override PGDATABASE instead.
     const escapedCode = pythonCode.replace(/'/g, "'\\''");
-    const command = `cd ~/src/odoo && echo '${escapedCode}' | ./odoo-bin shell -d production --no-http`;
+    const dbEnv = this.config.database ? `PGDATABASE=${shellQuote(this.config.database)} ` : '';
+    const command = `cd ~/src/user && echo '${escapedCode}' | ${dbEnv}odoo-bin shell --no-http`;
     
     try {
       return await this.executeCommand(command);
